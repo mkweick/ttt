@@ -30,19 +30,29 @@ def build_board(b)
 end
 
 def player_move(b, letter)
-  puts "Specify the number on the board to begin"
-  player_input = 0
-  loop do
-    player_input = gets.chomp.to_i
-    break if (1..9).include?(player_input)
-    puts "Number must be between 1 - 9"
-  end
-  b[player_input] = letter
+  begin
+    puts "Specify the number on the board to begin"
+    player_input = 0
+    loop do
+      player_input = gets.chomp.to_i
+      break if (1..9).include?(player_input)
+      puts "Number must be between 1 - 9"
+    end
+    if tile_already_played?(b, player_input)
+      b[player_input] = letter
+    else
+      puts "Tile already played, please select a different tile"
+    end
+  end until !tile_already_played?(b, player_input)
 end
 
 def computer_move(b, letter)
   computer_input = b.select { |k, v| (1..9).include?(v) }.keys.sample
   b[computer_input] = letter
+end
+
+def tile_already_played?(b, number)
+  (1..9).include?(b[number]) ? true : false
 end
 
 puts "Welcome to Tic, Tac, Toe!"
@@ -65,7 +75,7 @@ loop do
     puts
     puts "Computer is thinking......"
     puts
-    sleep 1.5
+    sleep 3.0
     computer_move(board, computer_letter)
     build_board(board)
     puts
