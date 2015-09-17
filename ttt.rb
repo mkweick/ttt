@@ -1,36 +1,74 @@
-puts "Welcome to Tic, Tac, Toe!"
+def new_game_board
+    positions = { 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 
+                  7 => 7, 8 => 8, 9 => 9 }
+    positions
+end
 
 def get_player_letter
   puts "Would you like to be X's or O's? (X/O)"
+  letter = ""
   loop do
     letter = gets.chomp.upcase
     break if ["X", "O"].include?(letter)
+    puts "You can only select 'X' or 'O' as valid game pieces"
   end
+  letter
 end
 
-def build_board(position = nil, player_letter = nil)
-  positions = { one: "1", two: "2", three: "3", four: "4", five: "5", 
-              six: "6", seven: "7", eight: "8", nine: "9" }
-
-  positions[position] = player_letter
-
+def build_board(b)
   puts "     |     |     "
-  puts "  #{positions[:one]}  |  #{positions[:two]}  |  #{positions[:three]}   "
+  puts "  #{b[1]}  |  #{b[2]}  |  #{b[3]}   "
   puts "     |     |     "
   puts "-----+-----+-----"
   puts "     |     |     "
-  puts "  #{positions[:four]}  |  #{positions[:five]}  |  #{positions[:six]}  "
+  puts "  #{b[4]}  |  #{b[5]}  |  #{b[6]}  "
   puts "     |     |     "
   puts "-----+-----+-----"
   puts "     |     |     "
-  puts "  #{positions[:seven]}  |  #{positions[:eight]}  |  #{positions[:nine]}  "
+  puts "  #{b[7]}  |  #{b[8]}  |  #{b[9]}  "
   puts "     |     |     "
 end
 
-player_letter = get_player_letter
-puts "Okay, you will be #{player_letter}"
-puts "You have first move! Specify the number on the board to begin."
-build_board
+def player_move(b, letter)
+  puts "Specify the number on the board to begin"
+  player_input = 0
+  loop do
+    player_input = gets.chomp.to_i
+    break if (1..9).include?(player_input)
+    puts "Number must be between 1 - 9"
+  end
+  b[player_input] = letter
+end
 
-first_move = gets.chomp
-build_board(first_move, "X")
+def computer_move(b, letter)
+  computer_input = b.select { |k, v| (1..9).include?(v) }.keys.sample
+  b[computer_input] = letter
+end
+
+puts "Welcome to Tic, Tac, Toe!"
+puts "What is your name?"
+user_name = gets.chomp.capitalize
+
+loop do
+  player_letter = get_player_letter
+  player_letter == "X" ? computer_letter = "O" : computer_letter = "X"
+  puts "#{user_name}, you will be #{player_letter}'s."
+  puts
+  board = new_game_board
+  build_board(board)
+  puts
+  puts "You have first move!"
+
+  begin
+    player_move(board, player_letter)
+    build_board(board)
+    puts
+    puts "Computer is thinking......"
+    puts
+    sleep 1.5
+    computer_move(board, computer_letter)
+    build_board(board)
+    puts
+  end until false
+
+end
