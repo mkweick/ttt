@@ -30,20 +30,9 @@ def build_board(b)
 end
 
 def player_move(b, letter)
-  begin
-    puts "Specify the number on the board to begin"
-    player_input = 0
-    loop do
-      player_input = gets.chomp.to_i
-      break if (1..9).include?(player_input)
-      puts "Number must be between 1 - 9"
-    end
-    if tile_already_played?(b, player_input)
-      b[player_input] = letter
-    else
-      puts "Tile already played, please select a different tile"
-    end
-  end until !tile_already_played?(b, player_input)
+  puts "Specify the number on the board to begin"
+  player_input = valid_tile?(b)
+  b[player_input] = letter
 end
 
 def computer_move(b, letter)
@@ -51,8 +40,22 @@ def computer_move(b, letter)
   b[computer_input] = letter
 end
 
-def tile_already_played?(b, number)
-  (1..9).include?(b[number]) ? true : false
+def valid_tile?(b)
+  player_input = gets.chomp.to_i
+  while (1..9).none? { |number| number == player_input }
+    puts "Number must be between 1 - 9"
+    player_input = gets.chomp.to_i
+  end
+  tile_already_played?(b, player_input)
+  player_input
+end
+
+def tile_already_played?(b, position)
+  while b[position] == "X" || b[position] == "O"
+    puts "Tile #{position} has already been played, select a different tile:"
+    valid_tile?(b)
+  end
+  position
 end
 
 puts "Welcome to Tic, Tac, Toe!"
